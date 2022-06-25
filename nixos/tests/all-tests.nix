@@ -11,6 +11,7 @@
   exposeIntermediateAttrs ?
     attrs: {},
 
+  trace ? false
 }:
 # The return value of this function will be an attrset with arbitrary depth and
 # the `anything` returned by callTest at its test leafs.
@@ -63,7 +64,25 @@ let
     runTestOn
     ;
 
-in {
+  traceAttrs = if trace
+    then
+      # NOTE: Test evaluation _ends_ when all relevant attributes have been
+      #       traversed. This is not something we can put a trace around,
+      #       without either making assumptions about the evaluator (bad), or
+      #       strictly evaluating `v` before allowing the evaluator to inspect
+      #       any attributes, which is inefficient (bad).
+      #
+      # NOTE: The phrasing is intentionally a bit vague ("will evaluate"),
+      #       because it appears that a shallow evaluation for all systems is
+      #       performed before any test derivation is really evaluated.
+      #
+      # NOTE: It might be possible to improve both complications above by
+      #       moving the tracing logic into testing/run.nix or testing/matrix.nix.
+      mapAttrs (k: v: builtins.trace "will evaluate test ${k} for ${system}" v)
+    else
+      m: m;
+
+in traceAttrs {
   _3proxy = runTest ./3proxy.nix;
   acme = runTest ./acme.nix;
   adguardhome = runTest ./adguardhome.nix;

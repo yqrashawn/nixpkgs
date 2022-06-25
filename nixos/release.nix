@@ -25,6 +25,7 @@ let
       callTest = config: {
         ${system} = hydraJob config.test;
       };
+      trace = true;
     } // {
       # for typechecking of the scripts and evaluation of
       # the nodes, without running VMs.
