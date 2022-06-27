@@ -70,8 +70,11 @@ def convertMD(options: Dict[str, Any]) -> str:
         def codespan(self, text):
             return f"<literal>{escape(text)}</literal>"
         def block_code(self, text, info=None):
-            info = f" language={quoteattr(info)}" if info is not None else ""
-            return f"<programlisting{info}>\n{escape(text)}</programlisting>"
+            if info == "{=docbook}":
+                return text
+            else:
+                info = f" language={quoteattr(info)}" if info is not None else ""
+                return f"<programlisting{info}>\n{escape(text)}</programlisting>"
         def link(self, link, text=None, title=None):
             if link[0:1] == '#':
                 attr = "linkend"
