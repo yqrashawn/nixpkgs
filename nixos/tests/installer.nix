@@ -336,7 +336,12 @@ let
             perlPackages.ListCompare
             perlPackages.XMLLibXML
             python3Minimal
-            python3Packages.mistune
+            (let
+                self = (pkgs.python3Minimal.override {
+                  inherit self;
+                  includeSiteCustomize = true;
+                });
+              in self.withPackages (p: [ p.mistune_2_0 ]))
             shared-mime-info
             sudo
             texinfo
