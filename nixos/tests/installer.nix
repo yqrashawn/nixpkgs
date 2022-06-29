@@ -336,6 +336,7 @@ let
             perlPackages.ListCompare
             perlPackages.XMLLibXML
             python3Minimal
+            python3Packages.mistune
             shared-mime-info
             sudo
             texinfo
